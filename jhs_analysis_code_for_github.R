@@ -128,7 +128,8 @@ plot  + apatheme + labs(x = "\n Estimates with 95% CI \n ", y = NULL)
 
 
 ########################################################################
-## CD4T models using beta regression. The code for modeling is identical as with lm(), just using betareg() function instead
+## Example code for beta regression models predicting cell proportions, here CD4T. 
+## The code for modeling is identical as with lm(), just using betareg() function instead. 
 ########################################################################
 
 cd4_unadj <- betareg(CD4T ~ middaily + 
