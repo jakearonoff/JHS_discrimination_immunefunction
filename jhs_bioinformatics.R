@@ -7,16 +7,9 @@ library(stringi)
 library(data.table)
 library(svd)
 
-### NOTE: this analysis required a very large amount of computer memory, and as a result the code for estimating 
-#         lymphocyte %'s and the betas for later estimation of aging indicators was run through 11 batches. 
-#         Normally analyzing methylation in batches is problematic due to potential systematic batch differences. 
-#         However, the methods used here for estimating cell type %'s and aging indicators are robust to potential 
-#         batch effects. 
-
 ###################################
-# Contamination Check using ewastools package (this was run on the whole sample at once, not in batches)
+# Contamination Check using ewastools package
 ###################################
-
 targets_qc = read.metharray.sheet("path_to_directory_with_sample_sheets_and_IDATS")
 pheno = targets_qc # storing sample sheet info 
 meth = read_idats(pheno$Basename,quiet = FALSE) # reading in methylation data from IDATS
@@ -30,7 +23,7 @@ contam # potentially contaminated samples that were removed prior to quality con
 
 
 ###################################
-# QC using meffil package (this was run on the whole sample at once, not in batches)
+# QC using meffil package 
 ###################################
 targets_qc = read.metharray.sheet("path_to_directory_with_sample_sheets_and_IDATS")
 targets_qc <- filter(targets_qc, !(Sample_Name %in% contam)) # removing potentially contaminated samples
@@ -55,7 +48,6 @@ badsamplesnames <- badsamples$sample.name # store names of samples that didn't p
 ###################################
 # Estimating % of different lymphocyte types present in PBMC's using FlowSorted.Blood.EPIC package 
 ###################################
-
 data(IDOLOptimizedCpGs) # get IDOL CpG's (probes used for deconvolution)
 targets = read.metharray.sheet("path_to_directory_with_sample_sheets_and_IDATS")
 targets <- filter(targets, !(Sample_Name %in% contam)) # removing potentially contaminated samples
@@ -77,7 +69,6 @@ write.csv(wbc$counts, file = "filepath.csv") # write results to a .csv
 # Outputting beta values to a .csv file to input later into Horvath and colleagues website for aging estimates 
 #  website url: http://dnamage.genetics.ucla.edu   (used new clock)
 ###################################
-
 rcobj <- ratioConvert(wbc$normalizedData, what = "beta", keepCN = F)
 noob.betas <- getBeta(rcobj)
 class(noob.betas)
